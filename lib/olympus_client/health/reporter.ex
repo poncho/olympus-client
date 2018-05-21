@@ -24,25 +24,26 @@ defmodule OlympusClient.Health.Reporter do
   ## Server Callbacks
 
   def init(:ok) do
-    Logger.info "Health system online!"
+    Logger.info "Olympus Health system online!"
+
     state = %HealthState{
       name: Application.get_env(:olympus, :service_name, "DEFAULT")
     }
+
     schedule_report()
     {:ok, state}
   end
 
-  def handle_info(:report_health, state) do
-    Logger.info "REPORTING THAT WE ARE HEALTHY <3"
+  def handle_info(:report_health, state) do 
     state =
       case Manager.report_health(state) do
         {:ok, _} ->
           update_report_time(state)
         {:error, error} ->
-          Logger.error fn -> "Error: #{error}" end
+          Logger.error fn -> "Olympus Health report error: #{error}" end
           set_error(state, error)
       end
-    IO.inspect(state, label: "STATE")
+
     schedule_report()
     {:noreply, state}
   end
