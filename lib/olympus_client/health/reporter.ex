@@ -1,5 +1,5 @@
 defmodule OlympusClient.Health.Reporter do
-  @doc """
+  @moduledoc """
   Health Reporter Application
   """
 
@@ -8,6 +8,7 @@ defmodule OlympusClient.Health.Reporter do
   require Logger
 
   alias OlympusClient.Health.Manager
+  alias OlympusClient.Health.HealthState
 
   @report_interval 5_000
 
@@ -24,24 +25,48 @@ defmodule OlympusClient.Health.Reporter do
 
   def init(:ok) do
     Logger.info "Health system online!"
-    state = %{
-      name: Application.get_env(:olympus, :service_name, "DEFAULT"),
-      start_time: DateTime.utc_now
+    state = %HealthState{
+      name: Application.get_env(:olympus, :service_name, "DEFAULT")
     }
-    schedule_heartbeat()
-    {:ok, nil}
+    schedule_report()
+    {:ok, state}
   end
 
   def handle_info(:report_health, state) do
     Logger.info "REPORTING THAT WE ARE HEALTHY <3"
-    report = Manager.report_health(state) |> IO.inspect(label: "REPORT")
-    schedule_heartbeat()
+    state =
+      case Manager.report_health(state) do
+        {:ok, _} ->
+          update_report_time(state)
+        {:error, error} ->
+          Logger.error fn -> "Error: #{error}" end
+          set_error(state, error)
+      end
+    IO.inspect(state, label: "STATE")
+    schedule_report()
     {:noreply, state}
   end
 
   # Schedules next health report with the report interval
-  @spec schedule_heartbeat :: any() 
-  defp schedule_heartbeat do
+  @spec schedule_report :: any() 
+  defp schedule_report do
     Process.send_after(self(), :report_health, @report_interval)
+  end
+
+  # Updates the last report time in state
+  @spec update_report_time(HealthState.t()) :: HealthState.t()
+  defp update_report_time(state) do
+    state
+    |> Map.put(:last_report_time, DateTime.utc_now())
+    |> Map.put(:error, nil)
+    |> Map.put(:status, :ok)
+  end
+
+  # Sets state errors
+  @spec set_error(HealthState.t(), String.t()) :: HealthState.t()
+  defp set_error(state, error) do
+    state
+    |> Map.put(:error, error)
+    |> Map.put(:status, :error)
   end
 end
