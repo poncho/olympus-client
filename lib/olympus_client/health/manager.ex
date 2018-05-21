@@ -12,7 +12,7 @@ defmodule OlympusClient.Health.Manager do
     headers = [{"Content-Type", "application/json"}]
 
     case HTTPoison.post(get_olympus_url(), body, headers) do
-      {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
+      {:ok, %HTTPoison.Response{status_code: 200, body: _body}} ->
         {:ok, nil}
       {_, %HTTPoison.Response{body: body}} ->
         {:error, "#{body}"}
