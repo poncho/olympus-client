@@ -7,8 +7,11 @@ defmodule OlympusClient.Application do
   Starts the health reporter
   """
   def start(_type, _args) do
-    children = []
-    opts = [strategy: :one_for_one, name: OlympusClient.Supervisor]
+    children = [
+      OlympusClient.Health.Reporter
+    ]
+
+    opts = [strategy: :one_for_one]
     Supervisor.start_link(children, opts)
   end
 end
