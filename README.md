@@ -1,21 +1,26 @@
-# OlympusClient
+# Olympus Client
 
-**TODO: Add description**
+> Health heartbeat client to communicate with Olympus
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `olympus_client` to your list of dependencies in `mix.exs`:
+The package can be installed by adding `olympus_client` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
   [
-    {:olympus_client, "~> 0.1.0"}
+    {:olympus_client, github: "poncho/olympus-client"}
   ]
 end
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/olympus_client](https://hexdocs.pm/olympus_client).
+Add your Olympus configuration after in your config.exs file
 
+```elixir
+config :olympus_client,
+  url: "",
+  app_name: "",
+```
+
+- ***url:** Olympus URL
+- ***name:** Your application name
