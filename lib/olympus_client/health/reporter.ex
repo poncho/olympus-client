@@ -27,7 +27,7 @@ defmodule OlympusClient.Health.Reporter do
     Logger.info "Olympus Health system online!"
 
     state = %HealthState{
-      name: Application.get_env(:olympus, :service_name, "DEFAULT")
+      name: Application.get_env(:olympus_client, :service_name, "default")
     }
 
     schedule_report()

@@ -1,6 +1,6 @@
 defmodule OlympusClient.Health.HealthState do
   defstruct [
-    name: "DEFAULT",
+    name: "default",
     start_time: DateTime.utc_now(),
     last_report_time: nil,
     status: :ok,

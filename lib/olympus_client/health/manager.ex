@@ -1,7 +1,7 @@
 defmodule OlympusClient.Health.Manager do
   
   @default_url "http://localhost:5008"
-  @default_endpoint "/v1/health"
+  @endpoint "/v1/health"
 
   @doc """
   Reports health to Olympus
@@ -22,11 +22,9 @@ defmodule OlympusClient.Health.Manager do
   end
 
   defp get_olympus_url do
-    url = Application.get_env(:olympus, :url, @default_url)
-    endpoint = Application.get_env(:olympus, :endpoint, @default_endpoint)
-
-    url
-    |> URI.merge(endpoint)
+    :olympus_client
+    |> Application.get_env(:url, @default_url)
+    |> URI.merge(@endpoint)
     |> URI.to_string
   end
 end
